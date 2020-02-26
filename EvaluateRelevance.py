@@ -65,12 +65,19 @@ def main(relevance='version of client'):
   print EvaluateRelevance(relevance)
 
 if __name__ == '__main__':
-  #cmdline = " ".join(map(cmd_quote, sys.argv[1:]))
-
-  # the following doesn't work in all cases, only tested on mac:
-  cmdline = subprocess.list2cmdline(sys.argv[1:])
+  # check for command argument, and try to pass it as the relevance to be evaluated
+  # TODO: find a better way to get the raw commandline string
+  if len(sys.argv) == 2:
+    # handle the case in which the commandline is a single string already:
+    cmdline = sys.argv[1]
+  else:
+    # the following doesn't work in all cases, only tested on mac:
+    cmdline = subprocess.list2cmdline(sys.argv[1:])
+    #cmdline = " ".join(map(cmd_quote, sys.argv[1:]))
+  
   if cmdline:
     #print len(sys.argv)
+    print "Note: this will not work on the command line directly in all cases"
     print "Q: " + cmdline
     main(cmdline)
   else:
