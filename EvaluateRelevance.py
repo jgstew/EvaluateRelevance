@@ -11,6 +11,7 @@ from __future__ import absolute_import
 
 import os
 import subprocess
+import sys
 
 def getPathQNA():
   testFilePaths = ["QnA", "/usr/local/bin/QnA", "/Library/BESAgent/BESAgent.app/Contents/MacOS/QnA", "/opt/BESClient/bin/QnA", "C:\Program Files (x86)\BigFix Enterprise\BES Client\qna.exe"]
@@ -56,7 +57,7 @@ def EvaluateRelevance(relevance="TRUE", returntype="RAW"):
   process = subprocess.Popen([pathQNA, "-t", "-showtypes"], bufsize=-1, universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
   outputdata, errordata = process.communicate(relevance.encode())
 
-  # TODO: implement, but for now, return path
+  # Return raw output data:   TODO: implement other return types
   return outputdata
 
 
@@ -64,4 +65,13 @@ def main(relevance='version of client'):
   print EvaluateRelevance(relevance)
 
 if __name__ == '__main__':
-  main()
+  #cmdline = " ".join(map(cmd_quote, sys.argv[1:]))
+
+  # the following doesn't work in all cases, only tested on mac:
+  cmdline = subprocess.list2cmdline(sys.argv[1:])
+  if cmdline:
+    #print len(sys.argv)
+    print "Q: " + cmdline
+    main(cmdline)
+  else:
+    main()
