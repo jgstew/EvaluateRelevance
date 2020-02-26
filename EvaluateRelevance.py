@@ -22,10 +22,26 @@ def getPathQNA():
       return file
   
   # TODO: need to have some sort of error handling
-  return "Not Found!"
+  return "ERROR: Valid QNA path not found!"
+
+def EvaluateRelevance(relevance="TRUE"):
+  pathQNA = getPathQNA()
+
+  # There are 2 methods to eval relevance using the QNA executable
+  #   - Subprocess using FileIn(relevance), FileOut(results)
+  #      - I need to test this method
+  #      - Can this method use filestreams instead of files? I hope so
+  #   - Subprocess using StdIn(relevance), StdOut(results)
+  #      - Has issues with parsing results
+  #      - Example: https://git.psu.edu/sysman/besengine/blob/master/Code/BESRelevanceProvider.py#L68
+  #   - Is there a better way using a library or an API of some sort?
+
+  # TODO: implement, but for now, return path
+  return pathQNA
+
 
 def main():
-  print getPathQNA()
+  print EvaluateRelevance()
 
 if __name__ == '__main__':
   main()
