@@ -16,11 +16,11 @@ import sys
 def getPathQNA():
   testFilePaths = ["QnA", "/usr/local/bin/QnA", "/Library/BESAgent/BESAgent.app/Contents/MacOS/QnA", "/opt/BESClient/bin/QnA", "C:\Program Files (x86)\BigFix Enterprise\BES Client\qna.exe"]
   
-  for file in testFilePaths:
+  for filepath in testFilePaths:
     # test if path exists and is executable: https://stackoverflow.com/questions/377017/test-if-executable-exists-in-python 
-    if os.path.isfile(file) and os.access(file, os.X_OK):
+    if os.path.isfile(filepath) and os.access(filepath, os.X_OK):
       # return first valid path
-      return file
+      return filepath
   
   # TODO: need to have some sort of error handling
   return "ERROR: Valid QNA path not found!"
