@@ -1,6 +1,6 @@
 #!/usr/local/python
-# 
-# Related: 
+#
+# Related:
 #  - https://git.psu.edu/sysman/besengine/blob/master/Code/BESRelevanceProvider.py
 """
 BESRelevanceProvider.py
@@ -17,7 +17,8 @@ def getPathQNA():
   testFilePaths = ["QnA", "/usr/local/bin/QnA", "/Library/BESAgent/BESAgent.app/Contents/MacOS/QnA", "/opt/BESClient/bin/QnA", "C:\Program Files (x86)\BigFix Enterprise\BES Client\qna.exe"]
   
   for filepath in testFilePaths:
-    # test if path exists and is executable: https://stackoverflow.com/questions/377017/test-if-executable-exists-in-python 
+    # test if path exists and is executable:
+    #   - https://stackoverflow.com/questions/377017/test-if-executable-exists-in-python
     if os.path.isfile(filepath) and os.access(filepath, os.X_OK):
       # return first valid path
       return filepath
@@ -28,7 +29,7 @@ def getPathQNA():
 def EvaluateRelevance(relevance="TRUE", returntype="RAW"):
   pathQNA = getPathQNA()
 
-  if not ( os.path.isfile(pathQNA) and os.access(pathQNA, os.X_OK) ):
+  if not(os.path.isfile(pathQNA) and os.access(pathQNA, os.X_OK)):
     # TODO: error handling in this case:
     return pathQNA
 
