@@ -62,7 +62,7 @@ def EvaluateRelevance(relevance="TRUE", returntype="RAW"):
 
 
 def main(relevance='version of client'):
-  print EvaluateRelevance(relevance)
+  print( EvaluateRelevance(relevance) )
 
 if __name__ == '__main__':
   # check for command argument, and try to pass it as the relevance to be evaluated
