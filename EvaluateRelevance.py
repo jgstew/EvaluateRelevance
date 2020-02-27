@@ -15,14 +15,14 @@ import sys
 
 def getPathQNA():
   testFilePaths = ["QnA", "/usr/local/bin/QnA", "/Library/BESAgent/BESAgent.app/Contents/MacOS/QnA", "/opt/BESClient/bin/QnA", "C:\Program Files (x86)\BigFix Enterprise\BES Client\qna.exe"]
-  
+
   for filepath in testFilePaths:
     # test if path exists and is executable:
     #   - https://stackoverflow.com/questions/377017/test-if-executable-exists-in-python
     if os.path.isfile(filepath) and os.access(filepath, os.X_OK):
       # return first valid path
       return filepath
-  
+
   # TODO: need to have some sort of error handling
   return "ERROR: Valid QNA path not found!"
 
@@ -36,7 +36,7 @@ def EvaluateRelevance(relevance="TRUE", returntype="RAW"):
   # There are 2 methods to eval relevance using the QNA executable
   #   - Subprocess using FileIn(relevance), FileOut(results)
   #     - After testing, this method has the same results parsing issues as using StdIn/StdOut
-  #     - The only potential advantage to this method is if there is a character limit for StdIn/StdOut method
+  #     - The potential advantage to this method is if there is a character limit for StdIn/StdOut
   #     - Can this method use filestreams instead of files? I hope so, but would need to test
   #   - Subprocess using StdIn(relevance), StdOut(results)
   #     - Has issues with parsing results
@@ -63,7 +63,7 @@ def EvaluateRelevance(relevance="TRUE", returntype="RAW"):
 
 
 def main(relevance='version of client'):
-  print( EvaluateRelevance(relevance) )
+  print(EvaluateRelevance(relevance))
 
 if __name__ == '__main__':
   # check for command argument, and try to pass it as the relevance to be evaluated
@@ -78,8 +78,8 @@ if __name__ == '__main__':
   
   if cmdline:
     #print len(sys.argv)
-    print( "Note: this will not work on the command line directly in all cases" )
-    print( "Q: " + cmdline )
+    print("Note: this will not work on the command line directly in all cases")
+    print("Q: " + cmdline)
     main(cmdline)
   else:
     main()
