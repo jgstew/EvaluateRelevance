@@ -77,8 +77,8 @@ if __name__ == '__main__':
   
   if cmdline:
     #print len(sys.argv)
-    print "Note: this will not work on the command line directly in all cases"
-    print "Q: " + cmdline
+    print( "Note: this will not work on the command line directly in all cases" )
+    print( "Q: " + cmdline )
     main(cmdline)
   else:
     main()
