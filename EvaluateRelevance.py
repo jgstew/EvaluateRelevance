@@ -15,10 +15,10 @@ import sys
 
 def getPathQNA():
   testFilePaths = [
-                    "QnA", 
-                    "/usr/local/bin/QnA", 
-                    "/Library/BESAgent/BESAgent.app/Contents/MacOS/QnA", 
-                    "/opt/BESClient/bin/QnA", 
+                    "QnA",
+                    "/usr/local/bin/QnA",
+                    "/Library/BESAgent/BESAgent.app/Contents/MacOS/QnA",
+                    "/opt/BESClient/bin/QnA",
                     "C:/Program Files (x86)/BigFix Enterprise/BES Client/qna.exe"
                   ]
 
