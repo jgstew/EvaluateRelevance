@@ -22,12 +22,12 @@ def getPathQNA():
                     "C:/Program Files (x86)/BigFix Enterprise/BES Client/qna.exe"
                   ]
 
-  for filepath in testFilePaths:
+  for file_path in testFilePaths:
     # test if path exists and is executable:
     #   - https://stackoverflow.com/questions/377017/test-if-executable-exists-in-python
-    if os.path.isfile(filepath) and os.access(filepath, os.X_OK):
+    if os.path.isfile(file_path) and os.access(file_path, os.X_OK):
       # return first valid path
-      return filepath
+      return file_path
 
   # TODO: need to have some sort of error handling
   return "ERROR: Valid QNA path not found!"
@@ -62,7 +62,7 @@ def EvaluateRelevance(relevance="TRUE", returntype="RAW"):
   #  - Error info
 
   process = subprocess.Popen(
-                              [ pathQNA, "-t", "-showtypes"],
+                              [pathQNA, "-t", "-showtypes"],
                               bufsize=-1,
                               universal_newlines=True,
                               stdin=subprocess.PIPE,
@@ -70,13 +70,13 @@ def EvaluateRelevance(relevance="TRUE", returntype="RAW"):
                               stderr=subprocess.STDOUT
                             )
 
-  outputdata, errordata = process.communicate(relevance)
+  output_data, error_data = process.communicate(relevance)
 
-  if errordata:
-    print("Error: " + errordata)
+  if error_data:
+    print("Error: " + error_data)
 
   # Return raw output data:   TODO: implement other return types
-  return outputdata
+  return output_data
 
 
 def main(relevance='version of client'):
@@ -87,16 +87,16 @@ if __name__ == '__main__':
   # TODO: find a better way to get the raw commandline string
   if len(sys.argv) == 2:
     # handle the case in which the commandline is a single string already:
-    cmdline = sys.argv[1]
+    cmd_line = sys.argv[1]
   else:
     # the following doesn't work in all cases, only tested on mac:
-    cmdline = subprocess.list2cmdline(sys.argv[1:])
+    cmd_line = subprocess.list2cmdline(sys.argv[1:])
     #cmdline = " ".join(map(cmd_quote, sys.argv[1:]))
 
-  if cmdline:
+  if cmd_line:
     #print len(sys.argv)
     print("Note: this will not work on the command line directly in all cases")
-    print("Q: " + cmdline)
-    main(cmdline)
+    print("Q: " + cmd_line)
+    main(cmd_line)
   else:
     main()
