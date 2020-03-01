@@ -13,8 +13,8 @@ import os
 import subprocess
 import sys
 
-def getPathQNA():
-  testFilePaths = [
+def get_path_QNA():
+  test_file_paths = [
                     "QnA",
                     "/usr/local/bin/QnA",
                     "/Library/BESAgent/BESAgent.app/Contents/MacOS/QnA",
@@ -22,7 +22,7 @@ def getPathQNA():
                     "C:/Program Files (x86)/BigFix Enterprise/BES Client/qna.exe"
                   ]
 
-  for file_path in testFilePaths:
+  for file_path in test_file_paths:
     # test if path exists and is executable:
     #   - https://stackoverflow.com/questions/377017/test-if-executable-exists-in-python
     if os.path.isfile(file_path) and os.access(file_path, os.X_OK):
@@ -33,11 +33,11 @@ def getPathQNA():
   return "ERROR: Valid QNA path not found!"
 
 def EvaluateRelevance(relevance="TRUE", returntype="RAW"):
-  pathQNA = getPathQNA()
+  path_QNA = get_path_QNA()
 
-  if not(os.path.isfile(pathQNA) and os.access(pathQNA, os.X_OK)):
+  if not(os.path.isfile(path_QNA) and os.access(path_QNA, os.X_OK)):
     # TODO: error handling in this case:
-    return pathQNA
+    return path_QNA
 
   # There are 2 methods to eval relevance using the QNA executable
   #   - Subprocess using FileIn(relevance), FileOut(results)
@@ -62,7 +62,7 @@ def EvaluateRelevance(relevance="TRUE", returntype="RAW"):
   #  - Error info
 
   process = subprocess.Popen(
-                              [pathQNA, "-t", "-showtypes"],
+                              [path_QNA, "-t", "-showtypes"],
                               bufsize=-1,
                               universal_newlines=True,
                               stdin=subprocess.PIPE,
