@@ -14,7 +14,7 @@ import subprocess
 import sys
 
 def getPathQNA():
-  testFilePaths = ["QnA", "/usr/local/bin/QnA", "/Library/BESAgent/BESAgent.app/Contents/MacOS/QnA", "/opt/BESClient/bin/QnA", "C:\Program Files (x86)\BigFix Enterprise\BES Client\qna.exe"]
+  testFilePaths = ["QnA", "/usr/local/bin/QnA", "/Library/BESAgent/BESAgent.app/Contents/MacOS/QnA", "/opt/BESClient/bin/QnA", "C:/Program Files (x86)/BigFix Enterprise/BES Client/qna.exe"]
 
   for filepath in testFilePaths:
     # test if path exists and is executable:
@@ -56,7 +56,7 @@ def EvaluateRelevance(relevance="TRUE", returntype="RAW"):
   #  - Error info
 
   process = subprocess.Popen([pathQNA, "-t", "-showtypes"], bufsize=-1, universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-  outputdata, errordata = process.communicate(relevance.encode())
+  outputdata, errordata = process.communicate(relevance)
 
   # Return raw output data:   TODO: implement other return types
   return outputdata
@@ -75,7 +75,7 @@ if __name__ == '__main__':
     # the following doesn't work in all cases, only tested on mac:
     cmdline = subprocess.list2cmdline(sys.argv[1:])
     #cmdline = " ".join(map(cmd_quote, sys.argv[1:]))
-  
+
   if cmdline:
     #print len(sys.argv)
     print("Note: this will not work on the command line directly in all cases")
