@@ -58,6 +58,9 @@ def EvaluateRelevance(relevance="TRUE", returntype="RAW"):
   process = subprocess.Popen([pathQNA, "-t", "-showtypes"], bufsize=-1, universal_newlines=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
   outputdata, errordata = process.communicate(relevance)
 
+  if errordata:
+    print("Error: " + errordata)
+
   # Return raw output data:   TODO: implement other return types
   return outputdata
 
