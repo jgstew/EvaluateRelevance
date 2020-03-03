@@ -3,7 +3,7 @@
 # Related:
 #  - https://git.psu.edu/sysman/besengine/blob/master/Code/BESRelevanceProvider.py
 """
-BESRelevanceProvider.py
+EvaluateRelevance.py
 
 Created by James Stewart (@JGStew) on 2020-02-26.
 """
@@ -27,6 +27,7 @@ def get_path_QNA():
     #   - https://stackoverflow.com/questions/377017/test-if-executable-exists-in-python
     if os.path.isfile(file_path) and os.access(file_path, os.X_OK):
       # return first valid path
+      ##print(file_path)
       return file_path
 
   # TODO: need to have some sort of error handling
