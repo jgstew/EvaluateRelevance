@@ -16,7 +16,8 @@ import sys
 import time
 
 
-def get_path_QNA():
+def get_path_qna():
+    """find path for the QNA binary"""
     test_file_paths = [
         "QnA",
         "/usr/local/bin/QnA",
@@ -37,7 +38,8 @@ def get_path_QNA():
 
 
 def EvaluateRelevanceRaw(relevance="TRUE"):
-    path_QNA = get_path_QNA()
+    """This function will get raw text client relevance results"""
+    path_qna_binary = get_path_qna()
     # print(path_QNA)
 
     # There are 2 methods to eval relevance using the QNA executable
@@ -71,7 +73,7 @@ def EvaluateRelevanceRaw(relevance="TRUE"):
     # https://stackoverflow.com/a/26099345/861745
     start_time = time.monotonic()
     qna_run = subprocess.run(
-        [path_QNA, "-t", "-showtypes", "relevance_tmp.txt"],
+        [path_qna_binary, "-t", "-showtypes", "relevance_tmp.txt"],
         check=True,
         capture_output=True,
         text=True,
@@ -90,31 +92,31 @@ def EvaluateRelevanceRaw(relevance="TRUE"):
         print("Error: " + error_data)
 
     if 'E: The operator "string" is not defined.' in output_data:
-        output_data += "Info: This error means a result was found, but it does not have a string representation."
+        output_data += "\nInfo: This error means a result was found, but it does not have a string representation."
 
     # Return raw output data:   TODO: implement other return types
     return output_data
 
 
 def main(relevance="version of client"):
+    """Execution starts here:"""
     print(EvaluateRelevanceRaw(relevance))
 
 
 if __name__ == "__main__":
-    # check for command argument, and try to pass it as the relevance to be evaluated
-    # TODO: find a better way to get the raw commandline string
+    # check for command argument, and use it as the relevance
     if len(sys.argv) == 2:
         # handle the case in which the commandline is a single string already:
-        cmd_line = sys.argv[1]
+        CMD_LINE = sys.argv[1]
     else:
-        # the following doesn't work in all cases, only tested on mac:
-        cmd_line = subprocess.list2cmdline(sys.argv[1:])
-        # cmdline = " ".join(map(cmd_quote, sys.argv[1:]))
+        # the following doesn't work in all cases:
+        CMD_LINE = subprocess.list2cmdline(sys.argv[1:])
 
-    if cmd_line:
-        # print len(sys.argv)
-        print("Note: this will not work on the command line directly in all cases")
-        print("Q: " + cmd_line)
-        main(cmd_line)
+    if CMD_LINE:
+        print(
+            "Note: this will not work on the command line directly in all cases. May require odd quote escaping."
+        )
+        print("Q: " + CMD_LINE)
+        main(CMD_LINE)
     else:
         main()
