@@ -49,9 +49,9 @@ def parse_raw_result_array(result):
     return results_array
 
 
-def EvaluateRelevanceString(relevance):
+def EvaluateRelevanceString(relevance, separator="\n"):
     """get string with newlines from relevance results"""
-    return "\n".join(EvaluateRelevanceArray(relevance))
+    return separator.join(EvaluateRelevanceArray(relevance))
 
 
 def EvaluateRelevanceArray(relevance):
@@ -116,7 +116,7 @@ def EvaluateRelevanceRaw(relevance="TRUE"):
     if 'E: The operator "string" is not defined.' in output_data:
         output_data += "\nInfo: This error means a result was found, but it does not have a string representation."
 
-    # Return raw output data:   TODO: implement other return types
+    # Return raw output data:
     return output_data
 
 
@@ -138,7 +138,7 @@ if __name__ == "__main__":
         print(
             "Note: this will not work on the command line directly in all cases. May require odd quote escaping."
         )
-        print("Q: " + CMD_LINE)
+        print("Q: " + CMD_LINE + "\n")
         main(CMD_LINE)
     else:
         main()
