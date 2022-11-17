@@ -9,9 +9,11 @@ Created by James Stewart (@JGStew) on 2020-02-26.
 """
 from __future__ import absolute_import
 
+import datetime
 import os
 import subprocess
 import sys
+import time
 
 
 def get_path_QNA():
@@ -34,7 +36,7 @@ def get_path_QNA():
     raise FileNotFoundError("Valid QNA path not found!")
 
 
-def EvaluateRelevance(relevance="TRUE", returntype="RAW"):
+def EvaluateRelevanceRaw(relevance="TRUE"):
     path_QNA = get_path_QNA()
     # print(path_QNA)
 
@@ -63,26 +65,39 @@ def EvaluateRelevance(relevance="TRUE", returntype="RAW"):
     # write relevance to local tmp file:
     with open("relevance_tmp.txt", "w") as rel_file:
         # Writing data to a file
-        rel_file.write("Q: " + relevance + "\n")
+        rel_file.write("Q: " + relevance)
 
+    # measure runtime of QNA:
+    # https://stackoverflow.com/a/26099345/861745
+    start_time = time.monotonic()
     qna_run = subprocess.run(
         [path_QNA, "-t", "-showtypes", "relevance_tmp.txt"],
         check=True,
         capture_output=True,
         text=True,
     )
+    end_time = time.monotonic()
+
     output_data = qna_run.stdout
     error_data = qna_run.stderr
 
+    output_data += (
+        "Time Taken: "
+        + str(datetime.timedelta(seconds=end_time - start_time))
+        + " as measured by python.\n"
+    )
     if error_data:
         print("Error: " + error_data)
+
+    if 'E: The operator "string" is not defined.' in output_data:
+        output_data += "Info: This error means a result was found, but it does not have a string representation."
 
     # Return raw output data:   TODO: implement other return types
     return output_data
 
 
 def main(relevance="version of client"):
-    print(EvaluateRelevance(relevance))
+    print(EvaluateRelevanceRaw(relevance))
 
 
 if __name__ == "__main__":
