@@ -15,6 +15,8 @@ import subprocess
 import sys
 import time
 
+import regex
+
 
 def get_path_qna():
     """find path for the QNA binary"""
@@ -35,6 +37,26 @@ def get_path_qna():
             return file_path
 
     raise FileNotFoundError("Valid QNA path not found!")
+
+
+def parse_raw_result_array(result):
+    """parse a raw relevance result into an array"""
+    results_array_raw = regex.regex.split("\r\n|\r|\n", result)
+    results_array = []
+    for result_raw in results_array_raw:
+        if result_raw.startswith("A: "):
+            results_array.append(result_raw.split("A: ", 1)[1])
+    return results_array
+
+
+def EvaluateRelevanceString(relevance):
+    """get string with newlines from relevance results"""
+    return "\n".join(EvaluateRelevanceArray(relevance))
+
+
+def EvaluateRelevanceArray(relevance):
+    """get array from relevance results"""
+    return parse_raw_result_array(EvaluateRelevanceRaw(relevance))
 
 
 def EvaluateRelevanceRaw(relevance="TRUE"):
