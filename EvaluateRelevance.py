@@ -31,16 +31,12 @@ def get_path_QNA():
             # print(file_path)
             return file_path
 
-    # TODO: need to have some sort of error handling
-    return "ERROR: Valid QNA path not found!"
+    raise FileNotFoundError("Valid QNA path not found!")
 
 
 def EvaluateRelevance(relevance="TRUE", returntype="RAW"):
     path_QNA = get_path_QNA()
-
-    if not (os.path.isfile(path_QNA) and os.access(path_QNA, os.X_OK)):
-        # TODO: error handling in this case:
-        return path_QNA
+    # print(path_QNA)
 
     # There are 2 methods to eval relevance using the QNA executable
     #   - Subprocess using FileIn(relevance), FileOut(results)
@@ -64,16 +60,19 @@ def EvaluateRelevance(relevance="TRUE", returntype="RAW"):
     #  - Relevance Return type (-showtypes)
     #  - Error info
 
-    process = subprocess.Popen(
-        [path_QNA, "-t", "-showtypes"],
-        bufsize=-1,
-        universal_newlines=True,
-        stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-    )
+    # write relevance to local tmp file:
+    with open("relevance_tmp.txt", "w") as rel_file:
+        # Writing data to a file
+        rel_file.write("Q: " + relevance + "\n")
 
-    output_data, error_data = process.communicate(relevance)
+    qna_run = subprocess.run(
+        [path_QNA, "-t", "-showtypes", "relevance_tmp.txt"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    output_data = qna_run.stdout
+    error_data = qna_run.stderr
 
     if error_data:
         print("Error: " + error_data)
