@@ -1,0 +1,4 @@
+---
+# Prettier Config
+printWidth: 88
+bracketSpacing: false
