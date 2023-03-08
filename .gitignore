@@ -1,5 +1,7 @@
 # Project specific:
 relevance_tmp.txt
+relevance_out.txt
+relevance_str.txt
 
 # MacOS
 .DS_Store

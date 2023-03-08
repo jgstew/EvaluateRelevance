@@ -59,11 +59,46 @@ def EvaluateRelevanceArray(relevance):
     return parse_raw_result_array(EvaluateRelevanceRaw(relevance))
 
 
+def EvaluateRelevanceRawFile(rel_file="relevance_tmp.txt"):
+    """This function will get raw text client relevance results from a file"""
+    # measure runtime of QNA:
+    # https://stackoverflow.com/a/26099345/861745
+    start_time = time.monotonic()
+    qna_run = subprocess.run(
+        [get_path_qna(), "-t", "-showtypes", rel_file],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    end_time = time.monotonic()
+
+    output_data = qna_run.stdout
+    error_data = qna_run.stderr
+
+    output_data += (
+        "Time Taken: "
+        + str(datetime.timedelta(seconds=end_time - start_time))
+        + " as measured by python.\n"
+    )
+    if error_data:
+        print("Error: " + error_data)
+
+    if 'E: The operator "string" is not defined.' in output_data:
+        output_data += "\nInfo: This error means a result was found, but it does not have a string representation."
+
+    with open("relevance_out.txt", "w") as rel_output:
+        # Writing data to a file
+        rel_output.write(output_data)
+
+    with open("relevance_str.txt", "w") as rel_output:
+        # Writing data to a file
+        rel_output.write("\n".join(parse_raw_result_array(output_data)))
+
+    return output_data
+
+
 def EvaluateRelevanceRaw(relevance="TRUE"):
     """This function will get raw text client relevance results"""
-    path_qna_binary = get_path_qna()
-    # print(path_QNA)
-
     # There are 2 methods to eval relevance using the QNA executable
     #   - Subprocess using FileIn(relevance), FileOut(results)
     #     - After testing, this method has the same results parsing issues as using StdIn/StdOut
@@ -91,33 +126,8 @@ def EvaluateRelevanceRaw(relevance="TRUE"):
         # Writing data to a file
         rel_file.write("Q: " + relevance)
 
-    # measure runtime of QNA:
-    # https://stackoverflow.com/a/26099345/861745
-    start_time = time.monotonic()
-    qna_run = subprocess.run(
-        [path_qna_binary, "-t", "-showtypes", "relevance_tmp.txt"],
-        check=True,
-        capture_output=True,
-        text=True,
-    )
-    end_time = time.monotonic()
-
-    output_data = qna_run.stdout
-    error_data = qna_run.stderr
-
-    output_data += (
-        "Time Taken: "
-        + str(datetime.timedelta(seconds=end_time - start_time))
-        + " as measured by python.\n"
-    )
-    if error_data:
-        print("Error: " + error_data)
-
-    if 'E: The operator "string" is not defined.' in output_data:
-        output_data += "\nInfo: This error means a result was found, but it does not have a string representation."
-
     # Return raw output data:
-    return output_data
+    return EvaluateRelevanceRawFile()
 
 
 def main(relevance="version of client"):
@@ -135,10 +145,13 @@ if __name__ == "__main__":
         CMD_LINE = subprocess.list2cmdline(sys.argv[1:])
 
     if CMD_LINE:
-        print(
-            "Note: this will not work on the command line directly in all cases. May require odd quote escaping."
-        )
-        print("Q: " + CMD_LINE + "\n")
-        main(CMD_LINE)
+        if os.path.isfile(CMD_LINE):
+            print(EvaluateRelevanceRawFile(CMD_LINE))
+        else:
+            print(
+                "Note: this will not work on the command line directly in all cases. May require odd quote escaping."
+            )
+            print("Q: " + CMD_LINE + "\n")
+            main(CMD_LINE)
     else:
         main()
