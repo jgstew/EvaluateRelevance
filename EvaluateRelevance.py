@@ -164,4 +164,4 @@ if __name__ == "__main__":
         if os.path.isfile(DEFAULT_INPUT_FILE):
             print(EvaluateRelevanceRawFile())
         else:
-            main('("No Relevance Specified", TRUE)')
+            main('("No Relevance Specified", TRUE, version of client)')
