@@ -17,6 +17,8 @@ import time
 
 import regex
 
+DEFAULT_INPUT_FILE = "relevance_tmp.txt"
+
 
 def get_path_qna():
     """find path for the QNA binary"""
@@ -59,7 +61,7 @@ def EvaluateRelevanceArray(relevance):
     return parse_raw_result_array(EvaluateRelevanceRaw(relevance))
 
 
-def EvaluateRelevanceRawFile(rel_file="relevance_tmp.txt"):
+def EvaluateRelevanceRawFile(rel_file=DEFAULT_INPUT_FILE):
     """This function will get raw text client relevance results from a file"""
     # measure runtime of QNA:
     # https://stackoverflow.com/a/26099345/861745
@@ -122,12 +124,12 @@ def EvaluateRelevanceRaw(relevance="TRUE"):
     #  - Error info
 
     # write relevance to local tmp file:
-    with open("relevance_tmp.txt", "w") as rel_file:
+    with open(DEFAULT_INPUT_FILE, "w") as rel_file:
         # Writing data to a file
         rel_file.write("Q: " + relevance)
 
     # Return raw output data:
-    return EvaluateRelevanceRawFile()
+    return EvaluateRelevanceRawFile(DEFAULT_INPUT_FILE)
 
 
 def main(relevance="version of client"):
@@ -149,7 +151,8 @@ if __name__ == "__main__":
             print(EvaluateRelevanceRawFile(CMD_LINE))
         else:
             print(
-                "Note: this will not work on the command line directly in all cases. May require odd quote escaping."
+                "Note: this will not work on the command line directly "
+                + "in all cases. May require odd quote escaping."
             )
             print("Q: " + CMD_LINE + "\n")
             main(CMD_LINE)
