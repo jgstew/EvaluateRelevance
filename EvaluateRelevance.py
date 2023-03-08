@@ -135,6 +135,10 @@ def EvaluateRelevanceRaw(relevance="TRUE"):
 def main(relevance="version of client"):
     """Execution starts here:"""
     print(EvaluateRelevanceRaw(relevance))
+    try:
+        os.remove(DEFAULT_INPUT_FILE)
+    except FileNotFoundError:
+        pass
 
 
 if __name__ == "__main__":
@@ -157,4 +161,7 @@ if __name__ == "__main__":
             print("Q: " + CMD_LINE + "\n")
             main(CMD_LINE)
     else:
-        main()
+        if os.path.isfile(DEFAULT_INPUT_FILE):
+            print(EvaluateRelevanceRawFile())
+        else:
+            main('("No Relevance Specified", TRUE)')
