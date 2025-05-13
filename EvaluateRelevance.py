@@ -11,11 +11,10 @@ from __future__ import absolute_import
 
 import datetime
 import os
+import re
 import subprocess
 import sys
 import time
-
-import regex
 
 DEFAULT_INPUT_FILE = "relevance_tmp.txt"
 
@@ -24,9 +23,9 @@ def get_path_qna():
     """find path for the QNA binary"""
     test_file_paths = [
         "QnA",
-        "/usr/local/bin/QnA",
+        "/usr/local/bin/qna",
         "/Library/BESAgent/BESAgent.app/Contents/MacOS/QnA",
-        "/opt/BESClient/bin/QnA",
+        "/opt/BESClient/bin/qna",
         "C:/Program Files (x86)/BigFix Enterprise/BES Client/qna.exe",
     ]
 
@@ -43,7 +42,7 @@ def get_path_qna():
 
 def parse_raw_result_array(result):
     """parse a raw relevance result into an array"""
-    results_array_raw = regex.regex.split("\r\n|\r|\n", result)
+    results_array_raw = re.split(r"\r\n|\r|\n", result)
     results_array = []
     for result_raw in results_array_raw:
         if result_raw.startswith("A: "):
