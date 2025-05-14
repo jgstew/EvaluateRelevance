@@ -60,13 +60,13 @@ def EvaluateRelevanceArray(relevance):
     return parse_raw_result_array(EvaluateRelevanceRaw(relevance))
 
 
-def EvaluateRelevanceRawFile(rel_file=DEFAULT_INPUT_FILE):
+def EvaluateRelevanceRawFile(rel_file_path=DEFAULT_INPUT_FILE):
     """This function will get raw text client relevance results from a file"""
     # measure runtime of QNA:
     # https://stackoverflow.com/a/26099345/861745
     start_time = time.monotonic()
     qna_run = subprocess.run(
-        [get_path_qna(), "-t", "-showtypes", rel_file],
+        [get_path_qna(), "-t", "-showtypes", rel_file_path],
         check=True,
         capture_output=True,
         text=True,
@@ -87,18 +87,18 @@ def EvaluateRelevanceRawFile(rel_file=DEFAULT_INPUT_FILE):
     if 'E: The operator "string" is not defined.' in output_data:
         output_data += "\nInfo: This error means a result was found, but it does not have a string representation."
 
-    with open("relevance_out.txt", "w") as rel_output:
+    with open("relevance_out.txt", "w", encoding="utf-8") as rel_output:
         # Writing data to a file
         rel_output.write(output_data)
 
-    with open("relevance_str.txt", "w") as rel_output:
+    with open("relevance_str.txt", "w", encoding="utf-8") as rel_output:
         # Writing data to a file
         rel_output.write("\n".join(parse_raw_result_array(output_data)))
 
     return output_data
 
 
-def EvaluateRelevanceRaw(relevance="TRUE"):
+def EvaluateRelevanceRaw(relevance="TRUE", rel_file_path=DEFAULT_INPUT_FILE):
     """This function will get raw text client relevance results"""
     # There are 2 methods to eval relevance using the QNA executable
     #   - Subprocess using FileIn(relevance), FileOut(results)
@@ -123,12 +123,12 @@ def EvaluateRelevanceRaw(relevance="TRUE"):
     #  - Error info
 
     # write relevance to local tmp file:
-    with open(DEFAULT_INPUT_FILE, "w") as rel_file:
+    with open(rel_file_path, "w", encoding="utf-8") as rel_file:
         # Writing data to a file
         rel_file.write("Q: " + relevance)
 
     # Return raw output data:
-    return EvaluateRelevanceRawFile(DEFAULT_INPUT_FILE)
+    return EvaluateRelevanceRawFile(rel_file_path)
 
 
 def main(relevance="version of client"):
@@ -144,21 +144,21 @@ if __name__ == "__main__":
     # check for command argument, and use it as the relevance
     if len(sys.argv) == 2:
         # handle the case in which the commandline is a single string already:
-        CMD_LINE = sys.argv[1]
+        cmd_args = sys.argv[1]
     else:
         # the following doesn't work in all cases:
-        CMD_LINE = subprocess.list2cmdline(sys.argv[1:])
+        cmd_args = subprocess.list2cmdline(sys.argv[1:])
 
-    if CMD_LINE:
-        if os.path.isfile(CMD_LINE):
-            print(EvaluateRelevanceRawFile(CMD_LINE))
+    if cmd_args:
+        if os.path.isfile(cmd_args):
+            print(EvaluateRelevanceRawFile(cmd_args))
         else:
             print(
                 "Note: this will not work on the command line directly "
                 + "in all cases. May require odd quote escaping."
             )
-            print("Q: " + CMD_LINE + "\n")
-            main(CMD_LINE)
+            print("Q: " + cmd_args + "\n")
+            main(cmd_args)
     else:
         if os.path.isfile(DEFAULT_INPUT_FILE):
             print(EvaluateRelevanceRawFile())
