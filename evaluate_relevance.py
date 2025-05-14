@@ -10,6 +10,8 @@ Copyright (c) 2020, James Stewart
 This will evaluate relevance using the QNA executable.
 It can be used to evaluate relevance strings or files containing relevance strings.
 
+Must be run as root or with sudo on MacOS.
+
 Example usage:
     python evaluate_relevance.py "version of client"
     python evaluate_relevance.py "Q: version of client"
