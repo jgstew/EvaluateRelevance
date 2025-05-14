@@ -6,6 +6,9 @@
 EvaluateRelevance.py
 
 Created by James Stewart (@JGStew) on 2020-02-26.
+Copyright (c) 2020, James Stewart
+
+This will evaluate relevance using the QNA executable.
 """
 from __future__ import absolute_import
 
@@ -22,11 +25,12 @@ DEFAULT_INPUT_FILE = "relevance_tmp.txt"
 def get_path_qna():
     """find path for the QNA binary"""
     test_file_paths = [
-        "QnA",
         "/usr/local/bin/qna",
         "/Library/BESAgent/BESAgent.app/Contents/MacOS/QnA",
         "/opt/BESClient/bin/qna",
         "C:/Program Files (x86)/BigFix Enterprise/BES Client/qna.exe",
+        "qna",
+        "qna.exe",
     ]
 
     for file_path in test_file_paths:
@@ -41,7 +45,13 @@ def get_path_qna():
 
 
 def parse_raw_result_array(result):
-    """parse a raw relevance result into an array"""
+    """parse a raw relevance result into an array
+    Args:
+        result (str): raw relevance result string
+    Returns:
+        list: array of relevance results
+    """
+    # split the result string into an array using regex
     results_array_raw = re.split(r"\r\n|\r|\n", result)
     results_array = []
     for result_raw in results_array_raw:
@@ -50,17 +60,22 @@ def parse_raw_result_array(result):
     return results_array
 
 
-def EvaluateRelevanceString(relevance, separator="\n"):
-    """get string with newlines from relevance results"""
-    return separator.join(EvaluateRelevanceArray(relevance))
+def evaluate_relevance_string(relevance, separator="\n"):
+    """get string with newlines from relevance results
+    Args:
+        relevance (str): relevance statement string
+        separator (str): separator for multiple results"""
+    return separator.join(evaluate_relevance_array(relevance))
 
 
-def EvaluateRelevanceArray(relevance):
-    """get array from relevance results"""
-    return parse_raw_result_array(EvaluateRelevanceRaw(relevance))
+def evaluate_relevance_array(relevance):
+    """get array from relevance results
+    Args:
+        relevance (str): relevance statement string"""
+    return parse_raw_result_array(evaluate_relevance_raw(relevance))
 
 
-def EvaluateRelevanceRawFile(rel_file_path=DEFAULT_INPUT_FILE):
+def evaluate_relevance_raw_file(rel_file_path=DEFAULT_INPUT_FILE):
     """This function will get raw text client relevance results from a file"""
     # measure runtime of QNA:
     # https://stackoverflow.com/a/26099345/861745
@@ -98,7 +113,7 @@ def EvaluateRelevanceRawFile(rel_file_path=DEFAULT_INPUT_FILE):
     return output_data
 
 
-def EvaluateRelevanceRaw(relevance="TRUE", rel_file_path=DEFAULT_INPUT_FILE):
+def evaluate_relevance_raw(relevance="TRUE", rel_file_path=DEFAULT_INPUT_FILE):
     """This function will get raw text client relevance results"""
     # There are 2 methods to eval relevance using the QNA executable
     #   - Subprocess using FileIn(relevance), FileOut(results)
@@ -113,7 +128,7 @@ def EvaluateRelevanceRaw(relevance="TRUE", rel_file_path=DEFAULT_INPUT_FILE):
     # There are 4 ways to return the relevance evaluation results
     #   - Raw String of Results
     #     - Easiest method
-    #   - Single String with separator between plural results (newline by default?)
+    #   - Single String with separator between plural results (newline by default)
     #   - Array of Strings for plural results
     #   - Hash with array of strings for results, plus timing info, return type info
 
@@ -128,12 +143,12 @@ def EvaluateRelevanceRaw(relevance="TRUE", rel_file_path=DEFAULT_INPUT_FILE):
         rel_file.write("Q: " + relevance)
 
     # Return raw output data:
-    return EvaluateRelevanceRawFile(rel_file_path)
+    return evaluate_relevance_raw_file(rel_file_path)
 
 
 def main(relevance="version of client"):
     """Execution starts here:"""
-    print(EvaluateRelevanceRaw(relevance))
+    print(evaluate_relevance_raw(relevance))
     try:
         os.remove(DEFAULT_INPUT_FILE)
     except FileNotFoundError:
@@ -150,8 +165,11 @@ if __name__ == "__main__":
         cmd_args = subprocess.list2cmdline(sys.argv[1:])
 
     if cmd_args:
+        # check if the command argument is a file
+        # if it is, use it as the relevance file
+        # if it is not, use it as the relevance string
         if os.path.isfile(cmd_args):
-            print(EvaluateRelevanceRawFile(cmd_args))
+            print(evaluate_relevance_raw_file(cmd_args))
         else:
             print(
                 "Note: this will not work on the command line directly "
@@ -161,6 +179,6 @@ if __name__ == "__main__":
             main(cmd_args)
     else:
         if os.path.isfile(DEFAULT_INPUT_FILE):
-            print(EvaluateRelevanceRawFile())
+            print(evaluate_relevance_raw_file())
         else:
             main('("No Relevance Specified", TRUE, version of client)')
