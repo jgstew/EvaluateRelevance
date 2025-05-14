@@ -28,6 +28,7 @@ import sys
 import time
 
 DEFAULT_INPUT_FILE = "relevance_tmp.txt"
+FILE_WRITE_OUTPUT = False
 
 
 def get_path_qna():
@@ -64,6 +65,8 @@ def parse_raw_result_array(result):
     results_array_raw = re.split(r"\r\n|\r|\n", result)
     results_array = []
     for result_raw in results_array_raw:
+        if result_raw.startswith("Q: A: "):
+            results_array.append(result_raw.split("Q: A: ", 1)[1])
         if result_raw.startswith("A: "):
             results_array.append(result_raw.split("A: ", 1)[1])
     return results_array
@@ -86,6 +89,45 @@ def evaluate_relevance_array(relevance):
         relevance (str): relevance statement string
     """
     return parse_raw_result_array(evaluate_relevance_raw(relevance))
+
+
+def evaluate_relevance_raw_stdin(relevance):
+    """This function will get raw text client relevance results using stdin."""
+
+    start_time = time.monotonic()
+    qna_run = subprocess.run(
+        [get_path_qna(), "-t", "-showtypes"],
+        input=relevance + "\n",
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    end_time = time.monotonic()
+
+    output_data = qna_run.stdout
+    error_data = qna_run.stderr
+
+    output_data += (
+        "Time Taken: "
+        + str(datetime.timedelta(seconds=end_time - start_time))
+        + " as measured by python.\n"
+    )
+    if error_data:
+        print("Error: " + error_data)
+
+    if 'E: The operator "string" is not defined.' in output_data:
+        output_data += "\nInfo: This error means a result was found, but it does not have a string representation."
+
+    if FILE_WRITE_OUTPUT:
+        with open("relevance_out.txt", "w", encoding="utf-8") as rel_output:
+            # Writing data to a file
+            rel_output.write(output_data)
+
+        with open("relevance_str.txt", "w", encoding="utf-8") as rel_output:
+            # Writing data to a file
+            rel_output.write("\n".join(parse_raw_result_array(output_data)))
+
+    return output_data
 
 
 def evaluate_relevance_raw_file(rel_file_path=DEFAULT_INPUT_FILE):
@@ -149,6 +191,8 @@ def evaluate_relevance_raw(relevance="TRUE", rel_file_path=DEFAULT_INPUT_FILE):
     #  - Timing info
     #  - Relevance Return type (-showtypes)
     #  - Error info
+
+    return evaluate_relevance_raw_stdin(relevance)
 
     # write relevance to local tmp file:
     with open(rel_file_path, "w", encoding="utf-8") as rel_file:
