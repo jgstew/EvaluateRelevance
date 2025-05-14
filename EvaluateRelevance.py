@@ -3,7 +3,7 @@
 # Related:
 #  - https://git.psu.edu/sysman/besengine/blob/master/Code/BESRelevanceProvider.py
 """
-EvaluateRelevance.py
+EvaluateRelevance.py script.
 
 Created by James Stewart (@JGStew) on 2020-02-26.
 Copyright (c) 2020, James Stewart
@@ -30,7 +30,7 @@ DEFAULT_INPUT_FILE = "relevance_tmp.txt"
 
 
 def get_path_qna():
-    """find path for the QNA binary"""
+    """Find path for the QNA binary."""
     test_file_paths = [
         "/usr/local/bin/qna",
         "/Library/BESAgent/BESAgent.app/Contents/MacOS/QnA",
@@ -52,8 +52,9 @@ def get_path_qna():
 
 
 def parse_raw_result_array(result):
-    """parse a raw relevance result into an array
+    """Parse a raw relevance result into an array
     Args:
+
         result (str): raw relevance result string
     Returns:
         list: array of relevance results
@@ -68,22 +69,26 @@ def parse_raw_result_array(result):
 
 
 def evaluate_relevance_string(relevance, separator="\n"):
-    """get string with newlines from relevance results
+    """Get string with newlines from relevance results
     Args:
+
         relevance (str): relevance statement string
-        separator (str): separator for multiple results"""
+        separator (str): separator for multiple results
+    """
     return separator.join(evaluate_relevance_array(relevance))
 
 
 def evaluate_relevance_array(relevance):
-    """get array from relevance results
+    """Get array from relevance results
     Args:
-        relevance (str): relevance statement string"""
+
+        relevance (str): relevance statement string
+    """
     return parse_raw_result_array(evaluate_relevance_raw(relevance))
 
 
 def evaluate_relevance_raw_file(rel_file_path=DEFAULT_INPUT_FILE):
-    """This function will get raw text client relevance results from a file"""
+    """This function will get raw text client relevance results from a file."""
     # measure runtime of QNA:
     # https://stackoverflow.com/a/26099345/861745
     start_time = time.monotonic()
@@ -121,7 +126,7 @@ def evaluate_relevance_raw_file(rel_file_path=DEFAULT_INPUT_FILE):
 
 
 def evaluate_relevance_raw(relevance="TRUE", rel_file_path=DEFAULT_INPUT_FILE):
-    """This function will get raw text client relevance results"""
+    """This function will get raw text client relevance results."""
     # There are 2 methods to eval relevance using the QNA executable
     #   - Subprocess using FileIn(relevance), FileOut(results)
     #     - After testing, this method has the same results parsing issues as using StdIn/StdOut
