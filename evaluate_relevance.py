@@ -3,7 +3,7 @@
 # Related:
 #  - https://git.psu.edu/sysman/besengine/blob/master/Code/BESRelevanceProvider.py
 """
-EvaluateRelevance.py script.
+evaluate_relevance.py script.
 
 Created by James Stewart (@JGStew) on 2020-02-26.
 Copyright (c) 2020, James Stewart
@@ -12,10 +12,10 @@ This will evaluate relevance using the QNA executable.
 It can be used to evaluate relevance strings or files containing relevance strings.
 
 Example usage:
-    python EvaluateRelevance.py "version of client"
-    python EvaluateRelevance.py "Q: version of client"
-    python EvaluateRelevance.py relevance_tmp.txt
-    python EvaluateRelevance.py
+    python evaluate_relevance.py "version of client"
+    python evaluate_relevance.py "Q: version of client"
+    python evaluate_relevance.py relevance_tmp.txt
+    python evaluate_relevance.py
 """
 from __future__ import absolute_import
 

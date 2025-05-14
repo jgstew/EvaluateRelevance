@@ -142,6 +142,7 @@ repos:
     hooks:
       - id: pyright
         stages: [manual]
+        exclude: "tests/*"
 
   - repo: https://github.com/sirosen/slyp
     rev: 0.8.2
@@ -160,3 +161,13 @@ repos:
       - id: bandit
         args: ["-r", "-lll"]
         stages: [manual]
+
+  # - repo: https://github.com/christophmeissner/pytest-pre-commit
+  #   rev: 1.0.0
+  #   hooks:
+  #     - id: pytest
+  #       pass_filenames: false
+  #       always_run: true
+  #       stages: [manual]
+  #       # additional_dependencies:
+  #       #   - setuptools

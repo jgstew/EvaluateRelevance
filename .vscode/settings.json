@@ -8,5 +8,10 @@
   "editor.formatOnSave": true,
   "git.autofetch": true,
   "python.linting.flake8Enabled": true,
-  "python.analysis.completeFunctionParens": true
+  "python.analysis.completeFunctionParens": true,
+  "python.testing.pytestArgs": [
+    "."
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
 }
