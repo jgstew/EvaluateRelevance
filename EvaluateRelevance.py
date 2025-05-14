@@ -9,6 +9,13 @@ Created by James Stewart (@JGStew) on 2020-02-26.
 Copyright (c) 2020, James Stewart
 
 This will evaluate relevance using the QNA executable.
+It can be used to evaluate relevance strings or files containing relevance strings.
+
+Example usage:
+    python EvaluateRelevance.py "version of client"
+    python EvaluateRelevance.py "Q: version of client"
+    python EvaluateRelevance.py relevance_tmp.txt
+    python EvaluateRelevance.py
 """
 from __future__ import absolute_import
 
@@ -139,8 +146,10 @@ def evaluate_relevance_raw(relevance="TRUE", rel_file_path=DEFAULT_INPUT_FILE):
 
     # write relevance to local tmp file:
     with open(rel_file_path, "w", encoding="utf-8") as rel_file:
+        if not relevance.startswith("Q: "):
+            relevance = "Q: " + relevance
         # Writing data to a file
-        rel_file.write("Q: " + relevance)
+        rel_file.write(relevance)
 
     # Return raw output data:
     return evaluate_relevance_raw_file(rel_file_path)
@@ -175,7 +184,10 @@ if __name__ == "__main__":
                 "Note: this will not work on the command line directly "
                 + "in all cases. May require odd quote escaping."
             )
-            print("Q: " + cmd_args + "\n")
+            if cmd_args.startswith("Q: "):
+                print(cmd_args + "\n")
+            else:
+                print("Q: " + cmd_args + "\n")
             main(cmd_args)
     else:
         if os.path.isfile(DEFAULT_INPUT_FILE):
