@@ -49,11 +49,14 @@ def test_evaluate_relevance_array(monkeypatch):
     assert evaluate_relevance_array(relevance) == expected
 
 
-def test_evaluate_relevance_raw(monkeypatch, tmp_path):
+def test_evaluate_relevance_raw(monkeypatch):
     """Test evaluate_relevance_raw evaluates relevance and returns raw results."""
     mock_output = "A: result1\nA: result2\nTime Taken: 0:00:01\n"
     monkeypatch.setattr(
         "evaluate_relevance.evaluate_relevance_raw_file", lambda x: mock_output
+    )
+    monkeypatch.setattr(
+        "evaluate_relevance.evaluate_relevance_raw_stdin", lambda x: mock_output
     )
 
     relevance = "version of client"
