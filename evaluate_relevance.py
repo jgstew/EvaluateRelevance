@@ -3,9 +3,8 @@
 # Related:
 #  - https://git.psu.edu/sysman/besengine/blob/master/Code/BESRelevanceProvider.py
 """
-evaluate_relevance.py script.
-
 Created by James Stewart (@JGStew) on 2020-02-26.
+
 Copyright (c) 2020, James Stewart
 
 This will evaluate relevance using the QNA executable.
