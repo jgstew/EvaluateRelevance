@@ -131,7 +131,7 @@ def evaluate_relevance_raw_stdin(relevance):
 
 
 def evaluate_relevance_raw_file(rel_file_path=DEFAULT_INPUT_FILE):
-    """This function will get raw text client relevance results from a file."""
+    """This function will get raw text client relevance string input from a file."""
     # measure runtime of QNA:
     # https://stackoverflow.com/a/26099345/861745
     start_time = time.monotonic()
