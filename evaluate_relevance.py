@@ -100,6 +100,12 @@ def evaluate_relevance_raw_stdin(relevance):
     if relevance.startswith("Q: "):
         relevance = relevance[3:]
 
+    # must be run as root or with sudo on MacOS
+    # Check if the user is root if on MacOS:
+    if sys.platform == "darwin" and os.geteuid() != 0:
+        # If not, print a message and exit
+        raise PermissionError("This script must be run as root or with sudo on MacOS.")
+
     start_time = time.monotonic()
     qna_run = subprocess.run(
         [get_path_qna(), "-t", "-showtypes"],
