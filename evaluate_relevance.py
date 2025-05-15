@@ -144,6 +144,13 @@ def evaluate_relevance_raw_stdin(relevance):
 
 def evaluate_relevance_raw_file(rel_file_path=DEFAULT_INPUT_FILE):
     """This function will get raw text client relevance string input from a file."""
+
+    # must be run as root or with sudo on MacOS
+    # Check if the user is root if on MacOS:
+    if sys.platform == "darwin" and os.geteuid() != 0:
+        # If not, print a message and exit
+        raise PermissionError("This script must be run as root or with sudo on MacOS.")
+
     # measure runtime of QNA:
     # https://stackoverflow.com/a/26099345/861745
     start_time = time.monotonic()
