@@ -168,7 +168,7 @@ def evaluate_relevance_raw_file(rel_file_path=DEFAULT_INPUT_FILE):
     return output_data
 
 
-def evaluate_relevance_raw(relevance="TRUE", rel_file_path=DEFAULT_INPUT_FILE):
+def evaluate_relevance_raw(relevance="TRUE"):
     """This function will get raw text client relevance results."""
     # There are 2 methods to eval relevance using the QNA executable
     #   - Subprocess using FileIn(relevance), FileOut(results)
@@ -194,15 +194,14 @@ def evaluate_relevance_raw(relevance="TRUE", rel_file_path=DEFAULT_INPUT_FILE):
 
     return evaluate_relevance_raw_stdin(relevance)
 
-    # write relevance to local tmp file:
+
+def write_relevance_file(relevance, rel_file_path=DEFAULT_INPUT_FILE):
+    """Write relevance to a file for use with QNA."""
     with open(rel_file_path, "w", encoding="utf-8") as rel_file:
         if not relevance.startswith("Q: "):
             relevance = "Q: " + relevance
         # Writing data to a file
         rel_file.write(relevance)
-
-    # Return raw output data:
-    return evaluate_relevance_raw_file(rel_file_path)
 
 
 def main(relevance="version of client"):
