@@ -94,6 +94,12 @@ def evaluate_relevance_array(relevance):
 def evaluate_relevance_raw_stdin(relevance):
     """This function will get raw text client relevance results using stdin."""
 
+    # need to remove the Q: from the relevance string if present
+    # this is because the QNA executable does not require it if stdin is used
+    # but it does require it if a file is used
+    if relevance.startswith("Q: "):
+        relevance = relevance[3:]
+
     start_time = time.monotonic()
     qna_run = subprocess.run(
         [get_path_qna(), "-t", "-showtypes"],
@@ -202,6 +208,32 @@ def write_relevance_file(relevance, rel_file_path=DEFAULT_INPUT_FILE):
             relevance = "Q: " + relevance
         # Writing data to a file
         rel_file.write(relevance)
+
+
+def evaluate_relevances_array_to_array(relevances):
+    """Evaluate multiple relevances from an array and return the results as an array.
+
+    Args:
+        relevances (list): list of relevance strings
+    Returns:
+        list: array of relevance results
+
+    Example:
+        evaluate_relevances_array_to_array(["version of client", "Q: TRUE;FALSE"])
+    """
+    # check if the input is a list
+    if not isinstance(relevances, list):
+        raise ValueError("Relevances must be a list.")
+    # check if the input is empty
+    if not relevances:
+        raise ValueError("Relevances list is empty.")
+    results = []
+    for relevance in relevances:
+        if isinstance(relevance, str):
+            results.append(evaluate_relevance_string(relevance))
+        else:
+            raise ValueError("Relevance must be a string.")
+    return results
 
 
 def main(relevance="version of client"):
