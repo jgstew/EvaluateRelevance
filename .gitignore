@@ -135,3 +135,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# go binary:
+evaluate_relevance
+evaluate_relevance.exe
