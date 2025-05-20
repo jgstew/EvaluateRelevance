@@ -31,7 +31,7 @@ def test_evaluate_relevance_string(monkeypatch):
     """Test evaluate_relevance_string returns results as a string with separators."""
     mock_results = ["result1", "result2", "result3"]
     monkeypatch.setattr(
-        "evaluate_relevance.evaluate_relevance_array", lambda x: mock_results
+        "evaluate_relevance.evaluate_relevance_array", lambda x, y: mock_results
     )
     relevance = "version of client"
     separator = ", "
@@ -43,7 +43,7 @@ def test_evaluate_relevance_array(monkeypatch):
     """Test evaluate_relevance_array returns results as an array."""
     mock_raw_result = "A: result1\nA: result2\nA: result3\n"
     monkeypatch.setattr(
-        "evaluate_relevance.evaluate_relevance_raw", lambda x: mock_raw_result
+        "evaluate_relevance.evaluate_relevance_raw", lambda x, y: mock_raw_result
     )
     relevance = "version of client"
     expected = ["result1", "result2", "result3"]
@@ -54,10 +54,10 @@ def test_evaluate_relevance_raw(monkeypatch):
     """Test evaluate_relevance_raw evaluates relevance and returns raw results."""
     mock_output = "A: result1\nA: result2\nTime Taken: 0:00:01\n"
     monkeypatch.setattr(
-        "evaluate_relevance.evaluate_relevance_raw_file", lambda x: mock_output
+        "evaluate_relevance.evaluate_relevance_raw_file", lambda x, y: mock_output
     )
     monkeypatch.setattr(
-        "evaluate_relevance.evaluate_relevance_raw_stdin", lambda x: mock_output
+        "evaluate_relevance.evaluate_relevance_raw_stdin", lambda x, y: mock_output
     )
 
     relevance = "version of client"
@@ -78,7 +78,10 @@ def test_evaluate_relevances_array_to_many_strings():
     if qna_path:
         relevance_array = ['"result1"', '"result2"']
         expected = ["result1", "result2"]
-        assert evaluate_relevances_array_to_many(relevance_array, "string") == expected
+        assert (
+            evaluate_relevances_array_to_many(relevance_array, "string", qna_path)
+            == expected
+        )
 
 
 def test_evaluate_relevances_array_to_many_arrays():
@@ -95,4 +98,7 @@ def test_evaluate_relevances_array_to_many_arrays():
     if qna_path:
         relevance_array = ['"result1"', '"result2"']
         expected = [["result1"], ["result2"]]
-        assert evaluate_relevances_array_to_many(relevance_array, "array") == expected
+        assert (
+            evaluate_relevances_array_to_many(relevance_array, "array", qna_path)
+            == expected
+        )

@@ -72,26 +72,26 @@ def parse_raw_result_array(result):
     return results_array
 
 
-def evaluate_relevance_string(relevance, separator="\n"):
+def evaluate_relevance_string(relevance, separator="\n", path_qna=None):
     """Get string with newlines from relevance results
     Args:
 
         relevance (str): relevance statement string
         separator (str): separator for multiple results
     """
-    return separator.join(evaluate_relevance_array(relevance))
+    return separator.join(evaluate_relevance_array(relevance, path_qna))
 
 
-def evaluate_relevance_array(relevance):
+def evaluate_relevance_array(relevance, path_qna=None):
     """Get array from relevance results
     Args:
 
         relevance (str): relevance statement string
     """
-    return parse_raw_result_array(evaluate_relevance_raw(relevance))
+    return parse_raw_result_array(evaluate_relevance_raw(relevance, path_qna))
 
 
-def evaluate_relevance_raw_stdin(relevance):
+def evaluate_relevance_raw_stdin(relevance, path_qna=None):
     """This function will get raw text client relevance results using stdin."""
 
     # need to remove the Q: from the relevance string if present
@@ -106,9 +106,12 @@ def evaluate_relevance_raw_stdin(relevance):
         # If not, print a message and exit
         raise PermissionError("This script must be run as root or with sudo on MacOS.")
 
+    if not path_qna:
+        path_qna = get_path_qna()
+
     start_time = time.monotonic()
     qna_run = subprocess.run(
-        [get_path_qna(), "-t", "-showtypes"],
+        [path_qna, "-t", "-showtypes"],
         input=relevance + "\n",
         check=True,
         capture_output=True,
@@ -196,7 +199,7 @@ def write_relevance_file(relevance, rel_file_path=DEFAULT_INPUT_FILE):
         rel_file.write(relevance)
 
 
-def evaluate_relevances_array_to_many(relevances, results_type="array"):
+def evaluate_relevances_array_to_many(relevances, results_type="array", path_qna=None):
     """Evaluate multiple relevances from an array and return the results as an array.
 
     Args:
@@ -220,15 +223,15 @@ def evaluate_relevances_array_to_many(relevances, results_type="array"):
     for relevance in relevances:
         if isinstance(relevance, str):
             if results_type == "array":
-                results.append(evaluate_relevance_array(relevance))
+                results.append(evaluate_relevance_array(relevance, path_qna))
             else:
-                results.append(evaluate_relevance_string(relevance))
+                results.append(evaluate_relevance_string(relevance, path_qna))
         else:
             raise ValueError("Relevance must be a string.")
     return results
 
 
-def evaluate_relevance_raw(relevance="TRUE"):
+def evaluate_relevance_raw(relevance="TRUE", path_qna=None):
     """This function will get raw text client relevance results."""
     # There are 2 methods to eval relevance using the QNA executable
     #   - Subprocess using FileIn(relevance), FileOut(results)
@@ -252,7 +255,7 @@ def evaluate_relevance_raw(relevance="TRUE"):
     #  - Relevance Return type (-showtypes)
     #  - Error info
 
-    return evaluate_relevance_raw_stdin(relevance)
+    return evaluate_relevance_raw_stdin(relevance, path_qna)
 
 
 def main(relevance="version of client"):
