@@ -4,6 +4,7 @@ from evaluate_relevance import (
     evaluate_relevance_array,
     evaluate_relevance_raw,
     evaluate_relevance_string,
+    evaluate_relevances_array_to_array,
     get_path_qna,
     parse_raw_result_array,
 )
@@ -61,3 +62,20 @@ def test_evaluate_relevance_raw(monkeypatch):
 
     relevance = "version of client"
     assert evaluate_relevance_raw(relevance) == mock_output
+
+
+def test_evaluate_relevances_array_to_array():
+    """Test evaluate_relevances_array_to_array which evaluates multiple relevance
+    statements.
+    """
+    qna_path = None
+
+    try:
+        qna_path = get_path_qna()
+    except FileNotFoundError:
+        pytest.skip("QNA binary not found, skipping test.")
+
+    if qna_path:
+        relevance_array = ['"result1"', '"result2"']
+        expected = ["result1", "result2"]
+        assert evaluate_relevances_array_to_array(relevance_array) == expected
