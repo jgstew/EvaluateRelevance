@@ -155,7 +155,18 @@ def evaluate_relevance_raw_stdin(relevance, path_qna=None):
 
 
 def evaluate_relevance_raw_file(rel_file_path=DEFAULT_INPUT_FILE):
-    """This function will get raw text client relevance string input from a file."""
+    """This function will get raw text client relevance string input from a file.
+
+    Args:
+        rel_file_path (str): path to the file containing the relevance string
+
+    Returns:
+        str: raw output from QNA
+
+    This function is less efficient than using stdin, evaluate_relevance_raw_stdin should be preferred.
+    This is included for completeness and to allow for file input.
+    This is also used in the main function to allow for command line input of a file path.
+    """
 
     # must be run as root or with sudo on MacOS
     # Check if the user is root if on MacOS:
