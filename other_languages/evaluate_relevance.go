@@ -1,6 +1,7 @@
 // Project: evaluate_relevance
 // File: evaluate_relevance.go
 // This is a Go program that evaluates relevance expressions using the QNA tool.
+// This is based upon: https://github.com/jgstew/EvaluateRelevance/blob/main/evaluate_relevance.py
 package main
 
 import (
