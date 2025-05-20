@@ -12,6 +12,15 @@ It can be used to evaluate relevance strings or files containing relevance strin
 
 Must be run as root or with sudo on MacOS.
 
+There are 4 ways to return the relevance evaluation results
+  - Raw String output from QNA
+    - evaluate_relevance_raw_stdin()
+  - Single String with separator between plural results (newline by default)
+    - evaluate_relevance_string()
+  - Array of Strings for plural results
+    - evaluate_relevance_array()
+  - (TODO) Hash with array of strings for results, plus timing info, return type info
+
 Example usage:
     python evaluate_relevance.py "version of client"
     python evaluate_relevance.py "Q: version of client"
@@ -225,7 +234,7 @@ def evaluate_relevances_array_to_many(relevances, results_type="array", path_qna
             if results_type == "array":
                 results.append(evaluate_relevance_array(relevance, path_qna))
             else:
-                results.append(evaluate_relevance_string(relevance, path_qna))
+                results.append(evaluate_relevance_string(relevance, path_qna=path_qna))
         else:
             raise ValueError("Relevance must be a string.")
     return results
@@ -233,27 +242,6 @@ def evaluate_relevances_array_to_many(relevances, results_type="array", path_qna
 
 def evaluate_relevance_raw(relevance="TRUE", path_qna=None):
     """This function will get raw text client relevance results."""
-    # There are 2 methods to eval relevance using the QNA executable
-    #   - Subprocess using FileIn(relevance), FileOut(results)
-    #     - After testing, this method has the same results parsing issues as using StdIn/StdOut
-    #     - The potential advantage to this method is if there is a character limit for StdIn/StdOut
-    #     - Can this method use filestreams instead of files? I hope so, but would need to test
-    #   - Subprocess using StdIn(relevance), StdOut(results)
-    #     - Has issues with parsing results
-    #     - Example: https://git.psu.edu/sysman/besengine/blob/master/Code/BESRelevanceProvider.py#L68
-    #   - Is there a better way using a library or an API of some sort?
-
-    # There are 4 ways to return the relevance evaluation results
-    #   - Raw String of Results
-    #     - Easiest method
-    #   - Single String with separator between plural results (newline by default)
-    #   - Array of Strings for plural results
-    #   - Hash with array of strings for results, plus timing info, return type info
-
-    # How to (optionally?) return other metadata
-    #  - Timing info
-    #  - Relevance Return type (-showtypes)
-    #  - Error info
 
     return evaluate_relevance_raw_stdin(relevance, path_qna)
 
