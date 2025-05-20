@@ -196,16 +196,19 @@ def write_relevance_file(relevance, rel_file_path=DEFAULT_INPUT_FILE):
         rel_file.write(relevance)
 
 
-def evaluate_relevances_array_to_array(relevances):
+def evaluate_relevances_array_to_many(relevances, results_type="array"):
     """Evaluate multiple relevances from an array and return the results as an array.
 
     Args:
         relevances (list): list of relevance strings
+        results_type (str): array or string
+            - array: return an array of array of plural results
+            - string: return an array of strings with newlines between plural results
     Returns:
-        list: array of relevance results
+        list: array of relevance results (array of strings or multidimensional array)
 
     Example:
-        evaluate_relevances_array_to_array(["version of client", "Q: TRUE;FALSE"])
+        evaluate_relevances_array_to_many(["version of client", "Q: TRUE;FALSE"])
     """
     # check if the input is a list
     if not isinstance(relevances, list):
@@ -216,7 +219,10 @@ def evaluate_relevances_array_to_array(relevances):
     results = []
     for relevance in relevances:
         if isinstance(relevance, str):
-            results.append(evaluate_relevance_string(relevance))
+            if results_type == "array":
+                results.append(evaluate_relevance_array(relevance))
+            else:
+                results.append(evaluate_relevance_string(relevance))
         else:
             raise ValueError("Relevance must be a string.")
     return results
