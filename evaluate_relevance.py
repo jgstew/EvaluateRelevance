@@ -228,6 +228,10 @@ def evaluate_relevances_array_to_many(relevances, results_type="array", path_qna
     # check if the input is empty
     if not relevances:
         raise ValueError("Relevances list is empty.")
+
+    if not path_qna:
+        path_qna = get_path_qna()
+
     results = []
     for relevance in relevances:
         if isinstance(relevance, str):
