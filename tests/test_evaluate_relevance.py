@@ -1,4 +1,13 @@
+import os
+import sys
+
 import pytest
+
+if not os.getenv("TEST_PIP"):
+    # add module folder to import paths for testing local src
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    # reverse the order so we make sure to get the local src module
+    sys.path.reverse()
 
 from evaluate_relevance import (
     evaluate_relevance_array,
@@ -70,6 +79,9 @@ def test_evaluate_relevances_array_to_many_strings():
     """
     qna_path = None
 
+    if sys.platform == "darwin":
+        pytest.skip("Skipping test on macOS due to QNA binary issues.")
+
     try:
         qna_path = get_path_qna()
     except FileNotFoundError:
@@ -89,6 +101,9 @@ def test_evaluate_relevances_array_to_many_arrays():
     statements.
     """
     qna_path = None
+
+    if sys.platform == "darwin":
+        pytest.skip("Skipping test on macOS due to QNA binary issues.")
 
     try:
         qna_path = get_path_qna()

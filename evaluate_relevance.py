@@ -118,7 +118,7 @@ def evaluate_relevance_raw_stdin(relevance, path_qna=None):
     if not path_qna:
         path_qna = get_path_qna()
 
-    start_time = time.monotonic()
+    start_time = time.perf_counter()
     qna_run = subprocess.run(
         [path_qna, "-t", "-showtypes"],
         input=relevance + "\n",
@@ -126,14 +126,16 @@ def evaluate_relevance_raw_stdin(relevance, path_qna=None):
         capture_output=True,
         text=True,
     )
-    end_time = time.monotonic()
+    end_time = time.perf_counter()
 
     output_data = qna_run.stdout
     error_data = qna_run.stderr
 
+    time_taken = end_time - start_time
+
     output_data += (
         "Time Taken: "
-        + str(datetime.timedelta(seconds=end_time - start_time))
+        + str(datetime.timedelta(seconds=time_taken))
         + " as measured by python.\n"
     )
     if error_data:
@@ -176,14 +178,14 @@ def evaluate_relevance_raw_file(rel_file_path=DEFAULT_INPUT_FILE):
 
     # measure runtime of QNA:
     # https://stackoverflow.com/a/26099345/861745
-    start_time = time.monotonic()
+    start_time = time.perf_counter()
     qna_run = subprocess.run(
         [get_path_qna(), "-t", "-showtypes", rel_file_path],
         check=True,
         capture_output=True,
         text=True,
     )
-    end_time = time.monotonic()
+    end_time = time.perf_counter()
 
     output_data = qna_run.stdout
     error_data = qna_run.stderr
@@ -259,6 +261,13 @@ def evaluate_relevance_raw(relevance="TRUE", path_qna=None):
     """This function will get raw text client relevance results."""
 
     return evaluate_relevance_raw_stdin(relevance, path_qna)
+
+
+def string_truncate(text, max_length=70):
+    """Truncate a string to a maximum length and append ellipsis if truncated."""
+    if len(text) > max_length:
+        return text[:max_length] + "..."
+    return text
 
 
 def main(relevance="version of client"):
