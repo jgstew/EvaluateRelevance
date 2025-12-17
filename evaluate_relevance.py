@@ -129,7 +129,7 @@ def evaluate_relevance_raw_stdin(relevance, path_qna=None):
     end_time = time.perf_counter()
 
     output_data = qna_run.stdout
-    error_data = qna_run.stderr
+    # error_data = qna_run.stderr
 
     time_taken = end_time - start_time
 
@@ -138,8 +138,8 @@ def evaluate_relevance_raw_stdin(relevance, path_qna=None):
         + str(datetime.timedelta(seconds=time_taken))
         + " as measured by python.\n"
     )
-    if error_data:
-        print("Error: " + error_data)
+    # if error_data:
+    #     print("Error: " + error_data)
 
     if 'E: The operator "string" is not defined.' in output_data:
         output_data += "\nInfo: This error means a result was found, but it does not have a string representation."
@@ -270,13 +270,61 @@ def string_truncate(text, max_length=70):
     return text
 
 
+def evaluate_relevance_file_compare(rel_file_path=DEFAULT_INPUT_FILE, iterations=3):
+    """
+    This function will evaluate relevance from a file multiple times and return
+    average time taken.
+    """
+
+    # must be run as root or with sudo on MacOS
+    # Check if the user is root if on MacOS:
+    if sys.platform == "darwin" and os.geteuid() != 0:
+        # If not, print a message and exit
+        raise PermissionError("This script must be run as root or with sudo on MacOS.")
+
+    # parse the relevance from the file:
+    with open(rel_file_path, "r", encoding="utf-8") as rel_file:
+        file_text = rel_file.read()
+
+    print("Evaluating relevance from file: " + rel_file_path)
+
+    # get lines starting with "Q:"
+    relevance_lines = []
+    for line in file_text.splitlines():
+        if line.strip().startswith("Q:"):
+            relevance_lines.append(line.strip()[3:].strip())
+
+    print("Found " + str(len(relevance_lines)) + " relevance lines in file.")
+    # print(string_truncate(str(relevance_lines)))
+
+    for relevance in relevance_lines:
+        print("\nQ: " + string_truncate(relevance))
+
+        # evaluate using file method
+        total_time_file = 0.0
+        for i in range(iterations):
+            start_time = time.perf_counter()
+            result = evaluate_relevance_raw_stdin(relevance)
+            end_time = time.perf_counter()
+            total_time_file += end_time - start_time
+        avg_time_file = total_time_file / iterations
+        result_string = "\n".join(parse_raw_result_array(result))
+        print("A: " + string_truncate(result_string))
+        print(
+            "Average Time Taken ("
+            + str(iterations)
+            + " iterations): "
+            + str(datetime.timedelta(seconds=avg_time_file))
+        )
+
+
 def main(relevance="version of client"):
     """Execution starts here:"""
     print(evaluate_relevance_raw(relevance))
-    try:
-        os.remove(DEFAULT_INPUT_FILE)
-    except FileNotFoundError:
-        pass
+    # try:
+    #     os.remove(DEFAULT_INPUT_FILE)
+    # except FileNotFoundError:
+    #     pass
 
 
 if __name__ == "__main__":
@@ -293,7 +341,7 @@ if __name__ == "__main__":
         # if it is, use it as the relevance file
         # if it is not, use it as the relevance string
         if os.path.isfile(cmd_args):
-            print(evaluate_relevance_raw_file(cmd_args))
+            print(evaluate_relevance_file_compare(cmd_args))
         else:
             print(
                 "Note: this will not work on the command line directly "
