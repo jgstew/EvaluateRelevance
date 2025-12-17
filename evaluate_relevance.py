@@ -341,7 +341,7 @@ if __name__ == "__main__":
         # if it is, use it as the relevance file
         # if it is not, use it as the relevance string
         if os.path.isfile(cmd_args):
-            print(evaluate_relevance_file_compare(cmd_args))
+            evaluate_relevance_file_compare(cmd_args)
         else:
             print(
                 "Note: this will not work on the command line directly "
