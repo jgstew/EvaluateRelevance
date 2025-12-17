@@ -166,7 +166,7 @@ def evaluate_relevance_raw_file(rel_file_path=DEFAULT_INPUT_FILE):
         str: raw output from QNA
 
     This function is less efficient than using stdin, evaluate_relevance_raw_stdin should be preferred.
-    This is included for completeness and to allow for file input.
+    This is included for completeness and to allow for file input even though it is no longer used internally.
     This is also used in the main function to allow for command line input of a file path.
     """
 
@@ -302,7 +302,8 @@ def evaluate_relevance_file_compare(rel_file_path=DEFAULT_INPUT_FILE, iterations
 
         # evaluate using file method
         total_time_file = 0.0
-        for i in range(iterations):
+        result = ""
+        for _ in range(iterations):
             start_time = time.perf_counter()
             result = evaluate_relevance_raw_stdin(relevance)
             end_time = time.perf_counter()
